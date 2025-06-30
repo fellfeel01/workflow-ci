@@ -12,17 +12,17 @@ jobs:
     steps:
     # Checkout the repository
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Set up Python
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10.14'
 
     # Install Miniconda
     - name: Install Miniconda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         python-version: 3.10.14
@@ -44,14 +44,15 @@ jobs:
 
     # Archive MLflow artifacts
     - name: Archive MLflow artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: mlflow-artifacts
         path: mlruns/
+        retention-days: 7
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -62,7 +63,11 @@ jobs:
       run: |
         conda activate amazon_mlflow_env
         # Get the latest run ID from MLflow
-        RUN_ID=$(mlflow runs list --experiment-name Amazon_Rating_Prediction_Autolog | grep "active" | awk '{print $2}' | head -n 1)
+        RUN_ID=$(mlflow runs list --experiment-name Amazon_Rating_Prediction_Autolog | grep -v "RUN_ID" | awk '{print $2}' | head -n 1)
+        if [ -z "$RUN_ID" ]; then
+          echo "Error: No MLflow run ID found"
+          exit 1
+        fi
         # Build Docker image
         mlflow models build-docker -m mlruns/0/$RUN_ID/artifacts/random_forest_model -n ${{ secrets.DOCKERHUB_USERNAME }}/amazon-model:latest
         # Push to Docker Hub
