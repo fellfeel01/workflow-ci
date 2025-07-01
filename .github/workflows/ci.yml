@@ -27,13 +27,18 @@ jobs:
         auto-update-conda: true
         python-version: 3.10.14
 
-    # Fix conda.yaml encoding
-    - name: Fix conda.yaml encoding
+    # Fix file encodings
+    - name: Fix file encodings
       shell: bash -l {0}
       run: |
-        python -c "with open('MLProject/conda.yaml', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('MLProject/conda.yaml', 'wb') as f: f.write(data)"
+        # Fix conda.yaml
+        python3 -c "with open('MLProject/conda.yaml', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('MLProject/conda.yaml', 'wb') as f: f.write(data)"
+        # Fix MLproject
+        python3 -c "with open('MLProject/MLproject', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('MLProject/MLproject', 'wb') as f: f.write(data)"
         file MLProject/conda.yaml
+        file MLProject/MLproject
         cat MLProject/conda.yaml
+        cat MLProject/MLproject
 
     # Debug Conda setup
     - name: Debug Conda setup

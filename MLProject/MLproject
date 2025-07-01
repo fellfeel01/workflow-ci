@@ -1,5 +1,7 @@
-name: AmazonRatingPrediction
-conda_env: conda.yaml
-entry_points:
-  main:
-    command: "python modelling.py"
+     name: Amazon_Rating_Prediction
+     conda_env: conda.yaml
+     entry_points:
+       main:
+         parameters:
+           dataset: {type: string, default: "amazon_preprocessed.csv"}
+         command: "python modelling.py {dataset}"
