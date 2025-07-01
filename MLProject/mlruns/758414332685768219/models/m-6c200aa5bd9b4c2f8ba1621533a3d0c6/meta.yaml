@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/naufal/Downloads/SMSML_naufal/Workflow-CI/MLProject/mlruns/758414332685768219/models/m-6c200aa5bd9b4c2f8ba1621533a3d0c6/artifacts
+creation_timestamp: 1751340985137
+experiment_id: '758414332685768219'
+last_updated_timestamp: 1751340989018
+model_id: m-6c200aa5bd9b4c2f8ba1621533a3d0c6
+model_type: null
+name: model
+source_run_id: 48479bf767aa429084c4400c4b941d2f
+status: 2
+status_message: null

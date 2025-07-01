@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/0/64a7ad89be00474b872f78065a0e1a7e/artifacts
+end_time: 1751347209547
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 64a7ad89be00474b872f78065a0e1a7e
+run_name: efficient-lark-482
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751347101021
+status: 4
+tags: []
+user_id: naufal

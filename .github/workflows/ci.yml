@@ -31,14 +31,16 @@ jobs:
     - name: Fix file encodings
       shell: bash -l {0}
       run: |
-        # Fix conda.yaml
-        python3 -c "with open('MLProject/conda.yaml', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('MLProject/conda.yaml', 'wb') as f: f.write(data)"
-        # Fix MLproject
-        python3 -c "with open('MLProject/MLproject', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('MLProject/MLproject', 'wb') as f: f.write(data)"
-        file MLProject/conda.yaml
-        file MLProject/MLproject
-        cat MLProject/conda.yaml
-        cat MLProject/MLproject
+        for file in MLProject/conda.yaml MLProject/MLproject; do
+          if [ -f "$file" ]; then
+            python3 -c "import sys; with open('$file', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('$file', 'wb') as f: f.write(data)"
+            file "$file" || { echo "Error checking $file encoding"; exit 1; }
+            cat "$file" || { echo "Error reading $file"; exit 1; }
+          else
+            echo "Error: $file not found"
+            exit 1
+          fi
+        done
 
     # Debug Conda setup
     - name: Debug Conda setup
@@ -61,7 +63,7 @@ jobs:
     - name: Debug dataset
       shell: bash -l {0}
       run: |
-        ls -l MLProject/amazon_preprocessed.csv
+        ls -l MLProject/amazon_preprocessed.csv || { echo "Dataset not found"; exit 1; }
 
     # Run MLflow Project
     - name: Run MLflow Project

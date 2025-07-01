@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/naufal/Downloads/SMSML_naufal/Workflow-CI/MLProject/mlruns/758414332685768219/48479bf767aa429084c4400c4b941d2f/artifacts
+end_time: 1751340989795
+entry_point_name: ''
+experiment_id: '758414332685768219'
+lifecycle_stage: active
+run_id: 48479bf767aa429084c4400c4b941d2f
+run_name: resilient-wasp-284
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751340854111
+status: 3
+tags: []
+user_id: naufal
