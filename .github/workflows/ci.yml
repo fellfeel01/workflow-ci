@@ -39,7 +39,7 @@ jobs:
       shell: bash -l {0}
       run: |
         conda env create -f MLProject/conda.yaml || { echo "Conda env creation failed"; exit 1; }
-        conda activate amazon_mlflow_env
+        conda activate airquality
         pip install mlflow==3.1.0
         conda list
 
