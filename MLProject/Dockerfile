@@ -1,6 +1,5 @@
-
-# Use MLflow-generated image as base
-FROM python:3.9-slim
+# Use Python 3.10 as base image
+FROM python:3.10-slim
 
 # Install MLflow
 RUN pip install mlflow

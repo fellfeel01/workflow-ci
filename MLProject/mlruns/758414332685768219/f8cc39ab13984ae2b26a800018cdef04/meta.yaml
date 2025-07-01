@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/naufal/Downloads/SMSML_naufal/Workflow-CI/MLProject/mlruns/758414332685768219/f8cc39ab13984ae2b26a800018cdef04/artifacts
+end_time: 1751299076039
+entry_point_name: ''
+experiment_id: '758414332685768219'
+lifecycle_stage: active
+run_id: f8cc39ab13984ae2b26a800018cdef04
+run_name: RandomForest_Autolog
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751299069083
+status: 3
+tags: []
+user_id: naufal
