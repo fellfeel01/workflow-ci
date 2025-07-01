@@ -31,7 +31,12 @@ jobs:
     - name: Fix conda.yaml encoding
       shell: bash -l {0}
       run: |
-        python -c "with open('MLProject/conda.yaml', 'rb') as f: data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b''); with open('MLProject/conda.yaml', 'wb') as f: f.write(data)"
+        python -c "
+with open('MLProject/conda.yaml', 'rb') as f:
+    data = f.read().replace(b'\xff\xfe', b'').replace(b'\xfe\xff', b'').replace(b'\xef\xbb\xbf', b'')
+with open('MLProject/conda.yaml', 'wb') as f:
+    f.write(data)
+"
         file MLProject/conda.yaml
         cat MLProject/conda.yaml
 
