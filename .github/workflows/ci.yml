@@ -1,0 +1,95 @@
+name: MLflow CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  retrain-model:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10.14'
+
+    # Install Miniconda
+    - name: Install Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: 3.10.14
+
+    # Debug Conda setup
+    - name: Debug Conda setup
+      shell: bash -l {0}
+      run: |
+        conda info
+        conda list
+
+    # Install dependencies and MLflow
+    - name: Install dependencies
+      shell: bash -l {0}
+      run: |
+        conda env create -f MLProject/conda.yaml || { echo "Conda env creation failed"; exit 1; }
+        conda activate amazon_mlflow_env
+        pip install mlflow==3.1.0
+        conda list
+
+    # Debug dataset
+    - name: Debug dataset
+      shell: bash -l {0}
+      run: |
+        ls -l MLProject/amazon_preprocessed.csv
+
+    # Run MLflow Project
+    - name: Run MLflow Project
+      shell: bash -l {0}
+      run: |
+        conda activate amazon_mlflow_env
+        mlflow run MLProject/ -P dataset=amazon_preprocessed.csv --experiment-name Amazon_Rating_Prediction_Autolog
+
+    # Debug MLflow artifacts
+    - name: Debug MLflow artifacts
+      shell: bash -l {0}
+      run: |
+        ls -l mlruns/0/
+
+    # Archive MLflow artifacts
+    - name: Archive MLflow artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: mlflow-artifacts
+        path: mlruns/
+        retention-days: 7
+
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # Build and push Docker image
+    - name: Build and push Docker image
+      shell: bash -l {0}
+      run: |
+        conda activate amazon_mlflow_env
+        # Get the latest run ID from MLflow
+        RUN_ID=$(mlflow runs list --experiment-name Amazon_Rating_Prediction_Autolog | grep -v "RUN_ID" | awk '{print $2}' | head -n 1)
+        if [ -z "$RUN_ID" ]; then
+          echo "Error: No MLflow run ID found"
+          exit 1
+        fi
+        echo "Run ID: $RUN_ID"
+        # Build Docker image
+        mlflow models build-docker -m mlruns/0/$RUN_ID/artifacts/random_forest_model -n ${{ secrets.DOCKERHUB_USERNAME }}/amazon-model:latest
+        # Push to Docker Hub
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/amazon-model:latest 
